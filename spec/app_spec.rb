@@ -161,6 +161,22 @@ RSpec.describe App do
     expect(output).to include("Project doesn't exist: 'House Work'")
   end
 
+  it "displays an error message, and keeps running when the command 'e' is entered with no projects" do
+    stdout = StringIO.new("")
+    stdin= StringIO.new("")
+    app = App.new(stdout, stdin)
+    allow(stdin).to receive(:gets).and_return("e\n", "ls\n", "a\n", "Fun new project", "q\n")
+
+    app.run
+
+    output = normalized_output(stdout)
+    expect(output).to include("No projects created")
+    expect(output).to include("Can't edit any projects")
+    expect(output).to include("Listing projects:")
+    expect(output).to include("No projects created")
+    expect(output).to include("Created project: 'Fun new project'")
+  end
+
   it "displays the edit project menu when all goes well" do
     stdout = StringIO.new("")
     stdin = StringIO.new("")
