@@ -58,7 +58,8 @@ class App
           if !@projects || @projects.size == 0
             @output_stream.puts("\e[40;38;5;214mCan't edit any projects\e[0m")
             @output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
-            break
+            command = @input_stream.gets.chomp
+            next
           end
 
           @output_stream.puts("\e[0;35mEnter a project name:\e[0m")
