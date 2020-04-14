@@ -36,6 +36,25 @@ RSpec.describe App do
     expect(output).to include("q   Quit the app")
   end
 
+  it "recognizes commands in the projects menu when there is a space after the command" do
+    stdout = StringIO.new("")
+    stdin = StringIO.new("")
+    app = App.new(stdout, stdin)
+
+    allow(stdin).to receive(:gets).and_return("ls \n", "a \n", "housework\n", "e \n", "housework\n", "b\n", "d \n", "housework\n", "q \n", "q\n")
+
+    app.run
+
+    output = normalized_output(stdout)
+    expect(output).to include("No projects created")
+    expect(output).to include("Enter a project name:")
+    expect(output).to include("Created project: 'housework'")
+    expect(output).to include("Enter a project name:")
+    expect(output).to include("Editing project: 'housework'")
+    expect(output).to include("Enter a project name:")
+    expect(output).to include("Deleting project: 'housework'")
+  end
+
   it "'ls' command to list projects returns an error message when there are no projects" do
     stdout = StringIO.new("")
     stdin = StringIO.new("")
