@@ -16,11 +16,11 @@ class App
     @output_stream.puts("\e[1;37me   \e[0;35mEdit a project")
     @output_stream.puts("\e[1;37mq   \e[0;35mQuit the app\e[0m\n\n")
 
-    command = @input_stream.gets.chomp
+    command = @input_stream.gets.gsub(/\s+/, '').chomp
 
-    while command != "q"
+    while command.gsub(/\s+/, '') != "q"
       if !@current_project
-        case command
+        case command.gsub(/\s+/, '')
         when "a"
           @projects = [] if @projects.nil?
           @output_stream.puts("\e[0;3mEnter a project name:\e[0m")
