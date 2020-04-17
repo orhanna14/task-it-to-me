@@ -1,5 +1,5 @@
 class App
-  attr_reader :output_stream, :input_stream, :projects, :deleted
+  attr_reader :output_stream, :input_stream, :projects, :deleted, :current_project
 
   def initialize(output_stream, input_stream)
     @output_stream = output_stream
@@ -14,7 +14,7 @@ class App
     command = get_project_input
 
     while command != "q"
-      if !@current_project
+      if !current_project
         case command
         when "a"
           projects if projects.nil?
@@ -73,61 +73,61 @@ class App
         when "a"
           prompt_for_new_task_name
           task_name = get_project_or_task_name
-          @current_project.values.first << task_name
+          current_project.values.first << task_name
           print_created_task(task_name)
         when "b"
           @current_project = false
           print_double_line
         when "c"
           prompt_for_new_project_name
-          old_name = @current_project.keys.first
+          old_name = current_project.keys.first
           new_name = get_project_or_task_name
-          @current_project[new_name] = @current_project.values.first
-          @current_project.delete(old_name)
+          current_project[new_name] = current_project.values.first
+          current_project.delete(old_name)
           print_changed_project_name(old_name, new_name)
         when "e"
           name = get_project_or_task_name
-          if (index = @current_project.values.first.find_index(name))
+          if (index = current_project.values.first.find_index(name))
             print_editing_task(name)
             prompt_for_new_task_name
             new_name = get_project_or_task_name
-            @current_project[@current_project.keys.first][index] = new_name
+            current_project[current_project.keys.first][index] = new_name
             print_changed_task_name(name, new_name)
           else
             print_task_does_not_exist(name)
           end
         when "d"
-          project_name = @current_project.keys.first
-          if @current_project.values.first.empty?
+          project_name = current_project.keys.first
+          if current_project.values.first.empty?
             print_no_tasks_created(project_name)
           else
             prompt_for_existing_task_name
             task_name = get_project_or_task_name
-            if @current_project[@current_project.keys.first].delete(task_name.strip)
+            if current_project[current_project.keys.first].delete(task_name.strip)
               print_deleted_task(task_name)
             else
               print_task_does_not_exist(task_name)
             end
           end
         when "f"
-          project_name = @current_project.keys.first
-          if @current_project.values.first.empty?
+          project_name = current_project.keys.first
+          if current_project.values.first.empty?
             print_no_tasks_created(project_name)
           else
             prompt_for_existing_task_name
             task_name = get_project_or_task_name
-            if @current_project[@current_project.keys.first].delete(task_name.strip)
+            if current_project[current_project.keys.first].delete(task_name.strip)
               print_finished_task(task_name)
             else
               print_task_does_not_exist(task_name)
             end
           end
         when "ls"
-          if @current_project.values.first.empty?
-            print_no_tasks_created_in_current_project(@current_project)
+          if current_project.values.first.empty?
+            print_no_tasks_created_in_current_project(current_project)
           else
             print_list_of_tasks
-            @current_project.values.first.each do |task|
+            current_project.values.first.each do |task|
               print_task(task)
             end
             print_double_line
