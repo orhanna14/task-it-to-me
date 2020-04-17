@@ -1,9 +1,10 @@
 class App
-  attr_reader :output_stream, :input_stream
+  attr_reader :output_stream, :input_stream, :projects
 
   def initialize(output_stream, input_stream)
     @output_stream = output_stream
     @input_stream = input_stream
+    @projects = []
   end
 
   def run
@@ -24,15 +25,15 @@ class App
       if !@current_project
         case command
         when "a"
-          @projects = [] if @projects.nil?
+          projects if projects.nil?
           output_stream.puts("\e[0;3mEnter a project name:\e[0m")
           name = get_project_or_task_name
-          @projects << {name => []}
+          projects << {name => []}
           output_stream.puts("\e[38;5;40mCreated project:\e[0m '#{name}'\n\n")
         when "ls"
           output_stream.puts("\e[38;5;40mListing projects:\e[0m\n")
-          if !@projects.nil? && !@projects.empty?
-            @projects.each do |project|
+          if !projects.nil? && !projects.empty?
+            projects.each do |project|
               output_stream.puts("  #{project.keys.first}\n")
             end
             output_stream.puts("\n")
@@ -40,10 +41,10 @@ class App
             output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
           end
         when "d"
-          if @projects && (@projects.size > 0)
+          if projects && (projects.size > 0)
             output_stream.puts("\e[0;35mEnter a project name:\e[0m")
             project_name = get_project_or_task_name
-            @deleted = @projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
+            @deleted = projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
             if @deleted
               output_stream.puts "\e[38;5;40mDeleting project:\e[0m '#{project_name.strip}'\n\n"
             else
@@ -51,13 +52,13 @@ class App
             end
           end
 
-          if !@deleted && (!@projects || @projects.empty?)
+          if !@deleted && (!projects || projects.empty?)
             output_stream.puts("\e[40;38;5;214mCan't delete a project\e[0m")
             output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
           end
           @deleted = nil
         when "e"
-          if !@projects || @projects.size == 0
+          if !projects || projects.size == 0
             output_stream.puts("\e[40;38;5;214mCan't edit any projects\e[0m")
             output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
             command = get_project_input
@@ -66,7 +67,7 @@ class App
 
           output_stream.puts("\e[0;35mEnter a project name:\e[0m")
           name = get_project_or_task_name
-          if (@current_project = @projects.detect { |p| p.keys.first == name })
+          if (@current_project = projects.detect { |p| p.keys.first == name })
             output_stream.puts("\e[38;5;40mEditing project: '#{name}'\n\n")
             output_stream.puts("\e[0;37mEDIT PROJECT MENU\e[0m")
             output_stream.puts("-----------------------------")
