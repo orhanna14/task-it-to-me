@@ -15,7 +15,7 @@ class App
       if !@current_project
         case command
         when "a"
-          @projects if @projects.nil?
+          @projects = [] if @projects.nil?
           prompt_for_project_name
           name = get_project_or_task_name
           @projects << {name => []}
@@ -34,7 +34,7 @@ class App
           if @projects && (@projects.size > 0)
             prompt_for_project_name
             project_name = get_project_or_task_name
-            @deleted = projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
+            @deleted = @projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
             if @deleted
               print_deleting_project(project_name)
             else
