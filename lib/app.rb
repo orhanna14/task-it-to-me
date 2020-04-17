@@ -24,9 +24,9 @@ class App
           print_list_of_projects
           if !@projects.nil? && !@projects.empty?
             @projects.each do |project|
-              output_stream.puts("  #{project.keys.first}\n")
+              print_projects(project)
             end
-            output_stream.puts("\n")
+            print_single_line
           else
             print_no_projects_created
           end
@@ -75,7 +75,7 @@ class App
           print_created_task(task_name)
         when "b"
           @current_project = false
-          output_stream.puts("\n\n")
+          print_double_line
         when "c"
           prompt_for_new_project_name
           old_name = @current_project.keys.first
@@ -86,23 +86,23 @@ class App
         when "e"
           name = get_project_or_task_name
           if (index = @current_project.values.first.find_index(name))
-            output_stream.puts("\e[38;5;40mEditing task:\e[0m '#{name}'")
+            print_editing_task(name)
             prompt_for_new_task_name
             new_name = get_project_or_task_name
             @current_project[@current_project.keys.first][index] = new_name
-            output_stream.puts("\e[38;5;40mChanged task name from\e[0m '#{name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
+            print_changed_task_name(name, new_name)
           else
             print_task_does_not_exist(name)
           end
         when "d"
           project_name = @current_project.keys.first
           if @current_project.values.first.empty?
-            output_stream.puts("\e[40;38;5;214mNo tasks created in '#{project_name}'\e[0m\n\n")
+            print_no_tasks_created(project_name)
           else
             prompt_for_existing_task_name
             task_name = get_project_or_task_name
             if @current_project[@current_project.keys.first].delete(task_name.strip)
-              output_stream.puts("\e[38;5;40mDeleted task:\e[0m '#{task_name.strip}'\n\n")
+              print_deleted_task(task_name)
             else
               print_task_does_not_exist(task_name)
             end
@@ -110,25 +110,25 @@ class App
         when "f"
           project_name = @current_project.keys.first
           if @current_project.values.first.empty?
-            output_stream.puts("\e[40;38;5;214mNo tasks created in '#{project_name}'\e[0m\n\n")
+            print_no_tasks_created(project_name)
           else
             prompt_for_existing_task_name
             task_name = get_project_or_task_name
             if @current_project[@current_project.keys.first].delete(task_name.strip)
-              output_stream.puts("\e[38;5;40mFinished task:\e[0m '#{task_name.strip}'\n\n")
+              print_finished_task(task_name)
             else
               print_task_does_not_exist(task_name)
             end
           end
         when "ls"
           if @current_project.values.first.empty?
-            output_stream.puts("\e[40;38;5;214mNo tasks created in \e[0m'#{@current_project.keys.first}'\n\n")
+            print_no_tasks_created_in_current_project(@current_project)
           else
             print_list_of_tasks
             @current_project.values.first.each do |task|
-              output_stream.puts("  #{task}")
+              print_task(task)
             end
-            output_stream.puts("\n\n")
+            print_double_line
           end
         end
       end
@@ -137,15 +137,28 @@ class App
     end
   end
 
-  def get_project_input
-    input_stream.gets.gsub(/\s+/, '').chomp
-  end
+###Projects & Tasks
 
   def get_project_or_task_name
     input_stream.gets.chomp
   end
 
-  #Projects Output
+  def print_single_line
+    output_stream.puts("\n")
+  end
+
+  def print_double_line
+    output_stream.puts("\n\n")
+  end
+  
+###Projects Only
+  ##Input
+  def get_project_input
+    input_stream.gets.gsub(/\s+/, '').chomp
+  end
+
+  ##Output
+    #Menus
 
   def print_project_menu
     output_stream.puts("\e[38;5;40mWelcome to Taskitome!")
@@ -175,6 +188,8 @@ class App
     output_stream.puts("\e[1;37mq   \e[0;35mQuit the app\e[0m\n\n")
   end
 
+  #Prompts
+
   def prompt_for_project_name
     output_stream.puts("\e[0;3mEnter a project name:\e[0m")
   end
@@ -183,8 +198,10 @@ class App
     output_stream.puts("\e[0;35mEnter new project name:\e[0m")
   end
 
-  def print_no_projects_created
-    output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
+  #With Arguments
+
+  def print_projects(project)
+    output_stream.puts("  #{project.keys.first}\n")
   end
 
   def print_deleting_project(project_name)
@@ -199,8 +216,18 @@ class App
     output_stream.puts("\e[38;5;40mCreated project:\e[0m '#{name}'\n\n")
   end
 
+  def print_changed_project_name(old_name, new_name)
+    output_stream.puts("\e[38;5;40mChanged project name from\e[0m '#{old_name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
+  end
+
+  #Without Arguments
+
   def print_list_of_projects
     output_stream.puts("\e[38;5;40mListing projects:\e[0m\n")
+  end
+
+  def print_no_projects_created
+    output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
   end
 
   def print_cannot_delete_project
@@ -215,11 +242,9 @@ class App
     output_stream.puts("\e[40;38;5;214mCan't edit any projects\e[0m")
   end
 
-  def print_changed_project_name(old_name, new_name)
-    output_stream.puts("\e[38;5;40mChanged project name from\e[0m '#{old_name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
-  end
-
-  #Tasks Output
+###Tasks Only
+  ##Output
+   #Prompts
 
   def prompt_for_new_task_name
     output_stream.puts("\e[0;35mEnter a task name:\e[0m")
@@ -227,6 +252,12 @@ class App
 
   def prompt_for_existing_task_name
     output_stream.puts("\e[0;35mEnter task name:\e[0m")
+  end
+
+   #With Arguments
+
+  def print_task(task)
+    output_stream.puts("  #{task}")
   end
 
   def print_task_does_not_exist(task_name)
@@ -237,6 +268,31 @@ class App
     output_stream.puts("\e[38;5;40mCreated task:\e[0m '#{task_name}'\n\n")
   end
 
+  def print_editing_task(name)
+    output_stream.puts("\e[38;5;40mEditing task:\e[0m '#{name}'")
+  end
+
+  def print_changed_task_name(name, new_name)
+    output_stream.puts("\e[38;5;40mChanged task name from\e[0m '#{name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
+  end
+
+  def print_no_tasks_created(project_name)
+    output_stream.puts("\e[40;38;5;214mNo tasks created in '#{project_name}'\e[0m\n\n")
+  end
+
+  def print_no_tasks_created_in_current_project(current_project)
+    output_stream.puts("\e[40;38;5;214mNo tasks created in \e[0m'#{current_project.keys.first}'\n\n")
+  end
+
+  def print_deleted_task(task_name)
+    output_stream.puts("\e[38;5;40mDeleted task:\e[0m '#{task_name.strip}'\n\n")
+  end
+
+  def print_finished_task(task_name)
+    output_stream.puts("\e[38;5;40mFinished task:\e[0m '#{task_name.strip}'\n\n")
+  end
+
+   #Without arguments
 
   def print_list_of_tasks
     output_stream.puts("\e[38;5;40mListing tasks:\e[0m")
