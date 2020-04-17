@@ -1,10 +1,11 @@
 class App
-  attr_reader :output_stream, :input_stream, :projects
+  attr_reader :output_stream, :input_stream, :projects, :deleted
 
   def initialize(output_stream, input_stream)
     @output_stream = output_stream
     @input_stream = input_stream
     @projects = []
+    @deleted = nil
   end
 
   def run
@@ -44,19 +45,19 @@ class App
           if projects && (projects.size > 0)
             output_stream.puts("\e[0;35mEnter a project name:\e[0m")
             project_name = get_project_or_task_name
-            @deleted = projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
-            if @deleted
+            deleted = projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
+            if deleted
               output_stream.puts "\e[38;5;40mDeleting project:\e[0m '#{project_name.strip}'\n\n"
             else
               output_stream.puts "\e[40;38;5;214mProject doesn't exist:\e[0m '#{project_name.strip}'\n\n"
             end
           end
 
-          if !@deleted && (!projects || projects.empty?)
+          if !deleted && (!projects || projects.empty?)
             output_stream.puts("\e[40;38;5;214mCan't delete a project\e[0m")
             output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
           end
-          @deleted = nil
+          deleted = nil
         when "e"
           if !projects || projects.size == 0
             output_stream.puts("\e[40;38;5;214mCan't edit any projects\e[0m")
