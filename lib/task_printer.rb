@@ -9,11 +9,11 @@ class TaskPrinter
     stdout.puts("  #{task}")
   end
 
-  def task_does_not_exist(task_name)
+  def does_not_exist(task_name)
     stdout.puts("\e[40;38;5;214mTask doesn't exist:\e[0m '#{task_name.strip}'\n\n")
   end
 
-  def created_task(task_name)
+  def created(task_name)
     stdout.puts("\e[38;5;40mCreated task:\e[0m '#{task_name}'\n\n")
   end
 
@@ -33,11 +33,11 @@ class TaskPrinter
     stdout.puts("\e[40;38;5;214mNo tasks created in \e[0m'#{current_project.keys.first}'\n\n")
   end
 
-  def deleted_task(task_name)
+  def deleted(task_name)
     stdout.puts("\e[38;5;40mDeleted task:\e[0m '#{task_name.strip}'\n\n")
   end
 
-  def finished_task(task_name)
+  def finished(task_name)
     stdout.puts("\e[38;5;40mFinished task:\e[0m '#{task_name.strip}'\n\n")
   end
 

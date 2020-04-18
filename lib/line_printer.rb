@@ -1,17 +1,15 @@
-class Printer
+class LinePrinter
   attr_accessor :stdout
 
   def initialize(stdout)
     @stdout = stdout
   end
 
-###Projects & Tasks
-  #Lines
-  def single_line
+  def single
     stdout.puts("\n")
   end
 
-  def double_line
+  def double
     stdout.puts("\n\n")
   end
 end

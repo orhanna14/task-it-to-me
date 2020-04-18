@@ -1,4 +1,4 @@
-class InputStream
+class UserInput
   attr_reader :stdin
 
   def initialize(stdin)
