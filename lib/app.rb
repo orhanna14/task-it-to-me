@@ -1,18 +1,16 @@
 require_relative "menu_printer"
 require_relative "project_printer"
 require_relative "task_printer"
-require_relative "line_printer"
 require_relative "prompter"
 require_relative "user_input"
 
 class App
-  attr_reader :menu_printer, :project_printer, :task_printer, :line_printer, :user_input, :prompter
+  attr_reader :menu_printer, :project_printer, :task_printer, :user_input, :prompter
 
   def initialize(stdout, stdin)
     @menu_printer = MenuPrinter.new(stdout)
     @project_printer = ProjectPrinter.new(stdout)
     @task_printer = TaskPrinter.new(stdout)
-    @line_printer = LinePrinter.new(stdout)
     @user_input = UserInput.new(stdin)
     @prompter = Prompter.new(stdout)
   end
@@ -37,7 +35,7 @@ class App
             @projects.each do |project|
               project_printer.projects(project)
             end
-            line_printer.single
+            project_printer.single_line
           else
             project_printer.none_created
           end
@@ -47,14 +45,14 @@ class App
             project_name = user_input.get_project_or_task_name
             @deleted = @projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
             if @deleted
-              project_printer.deleting_project(project_name)
+              project_printer.deleting_a_project(project_name)
             else
               project_printer.does_not_exist(project_name)
             end
           end
 
           if !@deleted && (!@projects || @projects.empty?)
-            project_printer.cannot_delete_project
+            project_printer.cannot_delete_a_project
             project_printer.none_created
           end
           @deleted = nil
@@ -73,7 +71,7 @@ class App
             command = user_input.get_project_input
             next
           else
-            project_printer.cannot_edit_project
+            project_printer.cannot_edit_a_project
             project_printer.does_not_exist(name)
           end
         end
@@ -86,7 +84,7 @@ class App
           task_printer.created(task_name)
         when "b"
           @current_project = false
-          line_printer.double
+          task_printer.double_line
         when "c"
           prompter.new_project_name
           old_name = @current_project.keys.first
@@ -139,7 +137,7 @@ class App
             @current_project.values.first.each do |task|
               task_printer.task(task)
             end
-            line_printer.double
+            task_printer.double_line
           end
         end
       end

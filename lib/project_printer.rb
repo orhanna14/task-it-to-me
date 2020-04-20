@@ -9,7 +9,7 @@ class ProjectPrinter
     stdout.puts("  #{project.keys.first}\n")
   end
 
-  def deleting_project(project_name)
+  def deleting_a_project(project_name)
     stdout.puts "\e[38;5;40mDeleting project:\e[0m '#{project_name.strip}'\n\n"
   end
 
@@ -33,15 +33,19 @@ class ProjectPrinter
     stdout.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
   end
 
-  def cannot_delete_project
+  def cannot_delete_a_project
     stdout.puts("\e[40;38;5;214mCan't delete a project\e[0m")
   end
 
-  def cannot_edit_project
+  def cannot_edit_a_project
     stdout.puts("\e[40;38;5;214mCan't edit project\e[0m")
   end
 
   def cannot_edit_projects
     stdout.puts("\e[40;38;5;214mCan't edit any projects\e[0m")
+  end
+
+  def single_line
+    stdout.puts("\n")
   end
 end

@@ -44,4 +44,8 @@ class TaskPrinter
   def list_of_tasks
     stdout.puts("\e[38;5;40mListing tasks:\e[0m")
   end
+
+  def double_line
+    stdout.puts("\n\n")
+  end
 end
