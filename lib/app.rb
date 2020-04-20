@@ -1,165 +1,149 @@
+require_relative "menu_printer"
+require_relative "project_printer"
+require_relative "task_printer"
+require_relative "prompter"
+require_relative "user_input"
+
 class App
-  def initialize(output_stream, input_stream)
-    @output_stream = output_stream
-    @input_stream = input_stream
+  attr_reader :menu_printer, :project_printer, :task_printer, :user_input, :prompter
+
+  def initialize(stdout, stdin)
+    @menu_printer = MenuPrinter.new(stdout)
+    @project_printer = ProjectPrinter.new(stdout)
+    @task_printer = TaskPrinter.new(stdout)
+    @user_input = UserInput.new(stdin)
+    @prompter = Prompter.new(stdout)
   end
 
   def run
-    @output_stream.puts("\e[38;5;40mWelcome to Taskitome!")
-    @output_stream.puts("\e[0;37m=============================\n")
-    @output_stream.puts("\e[0mPROJECTS MENU")
-    @output_stream.puts("\e[0;37m-----------------------------")
-    @output_stream.puts("\e[40;38;5;214mENTER A COMMAND:\e[0m")
-    @output_stream.puts("\e[1;37ma   \e[0;35mAdd a new project")
-    @output_stream.puts("\e[1;37mls  \e[0;35mList all project")
-    @output_stream.puts("\e[1;37md   \e[0;35mDelete a project")
-    @output_stream.puts("\e[1;37me   \e[0;35mEdit a project")
-    @output_stream.puts("\e[1;37mq   \e[0;35mQuit the app\e[0m\n\n")
+    menu_printer.project_menu
 
-    command = get_project_input
+    command = user_input.get_project_input
 
     while command != "q"
       if !@current_project
         case command
         when "a"
           @projects = [] if @projects.nil?
-          @output_stream.puts("\e[0;3mEnter a project name:\e[0m")
-          name = get_project_or_task_name
+          prompter.project_name
+          name = user_input.get_project_or_task_name
           @projects << {name => []}
-          @output_stream.puts("\e[38;5;40mCreated project:\e[0m '#{name}'\n\n")
+          project_printer.created(name)
         when "ls"
-          @output_stream.puts("\e[38;5;40mListing projects:\e[0m\n")
+          project_printer.list_of_projects
           if !@projects.nil? && !@projects.empty?
             @projects.each do |project|
-              @output_stream.puts("  #{project.keys.first}\n")
+              project_printer.projects(project)
             end
-            @output_stream.puts("\n")
+            project_printer.single_line
           else
-            @output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
+            project_printer.none_created
           end
         when "d"
           if @projects && (@projects.size > 0)
-            @output_stream.puts("\e[0;35mEnter a project name:\e[0m")
-            project_name = get_project_or_task_name
+            prompter.project_name
+            project_name = user_input.get_project_or_task_name
             @deleted = @projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
             if @deleted
-              @output_stream.puts "\e[38;5;40mDeleting project:\e[0m '#{project_name.strip}'\n\n"
+              project_printer.deleting_a_project(project_name)
             else
-              @output_stream.puts "\e[40;38;5;214mProject doesn't exist:\e[0m '#{project_name.strip}'\n\n"
+              project_printer.does_not_exist(project_name)
             end
           end
 
           if !@deleted && (!@projects || @projects.empty?)
-            @output_stream.puts("\e[40;38;5;214mCan't delete a project\e[0m")
-            @output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
+            project_printer.cannot_delete_a_project
+            project_printer.none_created
           end
           @deleted = nil
         when "e"
           if !@projects || @projects.size == 0
-            @output_stream.puts("\e[40;38;5;214mCan't edit any projects\e[0m")
-            @output_stream.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
-            command = get_project_input
+            project_printer.cannot_edit_projects
+            project_printer.none_created
+            command = user_input.get_project_input
             next
           end
 
-          @output_stream.puts("\e[0;35mEnter a project name:\e[0m")
-          name = get_project_or_task_name
+          prompter.project_name
+          name = user_input.get_project_or_task_name
           if (@current_project = @projects.detect { |p| p.keys.first == name })
-            @output_stream.puts("\e[38;5;40mEditing project: '#{name}'\n\n")
-            @output_stream.puts("\e[0;37mEDIT PROJECT MENU\e[0m")
-            @output_stream.puts("-----------------------------")
-            @output_stream.puts("\e[40;38;5;214mENTER A COMMAND:\e[0m")
-            @output_stream.puts("\e[1;37mc   \e[0;35mChange the project name")
-            @output_stream.puts("\e[1;37ma   \e[0;35mAdd a new task")
-            @output_stream.puts("\e[1;37mls  \e[0;35mList all tasks")
-            @output_stream.puts("\e[1;37md   \e[0;35mDelete a task")
-            @output_stream.puts("\e[1;37me   \e[0;35mEdit a task")
-            @output_stream.puts("\e[1;37mf   \e[0;35mFinish a task")
-            @output_stream.puts("\e[1;37mb   \e[0;35mBack to Projects menu")
-            @output_stream.puts("\e[1;37mq   \e[0;35mQuit the app\e[0m\n\n")
-            command = get_project_input
+          menu_printer.edit_project_menu(name)
+            command = user_input.get_project_input
             next
           else
-            @output_stream.puts("\e[40;38;5;214mCan't edit project\e[0m")
-            @output_stream.puts("\e[40;38;5;214mProject doesn't exist:\e[0m '#{name}'\n\n")
+            project_printer.cannot_edit_a_project
+            project_printer.does_not_exist(name)
           end
         end
       else
         case command
         when "a"
-          @output_stream.puts("\e[0;35mEnter a task name:\e[0m")
-          task_name = get_project_or_task_name
+          prompter.new_task_name
+          task_name = user_input.get_project_or_task_name
           @current_project.values.first << task_name
-          @output_stream.puts("\e[38;5;40mCreated task:\e[0m '#{task_name}'\n\n")
+          task_printer.created(task_name)
         when "b"
           @current_project = false
-          @output_stream.puts("\n\n")
+          task_printer.double_line
         when "c"
-          @output_stream.puts("\e[0;35mEnter new project name:\e[0m")
+          prompter.new_project_name
           old_name = @current_project.keys.first
-          new_name = get_project_or_task_name
+          new_name = user_input.get_project_or_task_name
           @current_project[new_name] = @current_project.values.first
           @current_project.delete(old_name)
-          @output_stream.puts("\e[38;5;40mChanged project name from\e[0m '#{old_name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
+          project_printer.changed_name(old_name, new_name)
         when "e"
-          name = get_project_or_task_name
+          name = user_input.get_project_or_task_name
           if (index = @current_project.values.first.find_index(name))
-            @output_stream.puts("\e[38;5;40mEditing task:\e[0m '#{name}'")
-            @output_stream.puts("\e[0;35mEnter a task name:\e[0m")
-            new_name = get_project_or_task_name
+            task_printer.editing_task(name)
+            prompter.new_task_name
+            new_name = user_input.get_project_or_task_name
             @current_project[@current_project.keys.first][index] = new_name
-            @output_stream.puts("\e[38;5;40mChanged task name from\e[0m '#{name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
+            task_printer.changed_task_name(name, new_name)
           else
-            @output_stream.puts("\e[40;38;5;214mTask doesn't exist:\e[0m '#{name}'\n\n")
+            task_printer.does_not_exist(name)
           end
         when "d"
           project_name = @current_project.keys.first
           if @current_project.values.first.empty?
-            @output_stream.puts("\e[40;38;5;214mNo tasks created in '#{project_name}'\e[0m\n\n")
+            task_printer.no_tasks_created(project_name)
           else
-            @output_stream.puts("\e[0;35mEnter task name:\e[0m")
-            task_name = get_project_or_task_name
+            prompter.existing_task_name
+            task_name = user_input.get_project_or_task_name
             if @current_project[@current_project.keys.first].delete(task_name.strip)
-              @output_stream.puts("\e[38;5;40mDeleted task:\e[0m '#{task_name.strip}'\n\n")
+              task_printer.deleted(task_name)
             else
-              @output_stream.puts("\e[40;38;5;214mTask doesn't exist:\e[0m '#{task_name.strip}'\n\n")
+              task_printer.does_not_exist(task_name)
             end
           end
         when "f"
           project_name = @current_project.keys.first
           if @current_project.values.first.empty?
-            @output_stream.puts("\e[40;38;5;214mNo tasks created in '#{project_name}'\e[0m\n\n")
+            task_printer.no_tasks_created(project_name)
           else
-            @output_stream.puts("\e[0;35mEnter task name:\e[0m")
-            task_name = get_project_or_task_name
+            prompter.existing_task_name
+            task_name = user_input.get_project_or_task_name
             if @current_project[@current_project.keys.first].delete(task_name.strip)
-              @output_stream.puts("\e[38;5;40mFinished task:\e[0m '#{task_name.strip}'\n\n")
+              task_printer.finished(task_name)
             else
-              @output_stream.puts("\e[40;38;5;214mTask doesn't exist:\e[0m '#{task_name.strip}'\n\n")
+              task_printer.does_not_exist(task_name)
             end
           end
         when "ls"
           if @current_project.values.first.empty?
-            @output_stream.puts("\e[40;38;5;214mNo tasks created in \e[0m'#{@current_project.keys.first}'\n\n")
+            task_printer.no_tasks_created_in_current_project(@current_project)
           else
-            @output_stream.puts("\e[38;5;40mListing tasks:\e[0m")
+            task_printer.list_of_tasks
             @current_project.values.first.each do |task|
-              @output_stream.puts("  #{task}")
+              task_printer.task(task)
             end
-            @output_stream.puts("\n\n")
+            task_printer.double_line
           end
         end
       end
 
-      command = get_project_input
+      command = user_input.get_project_input
     end
   end
 
-  def get_project_input
-    @input_stream.gets.gsub(/\s+/, '').chomp
-  end
-
-  def get_project_or_task_name
-    @input_stream.gets.chomp
-  end
 end
