@@ -13,7 +13,6 @@ RSpec.describe ProjectPrinter do
       project_printer.changed_name(project_name, new_project_name)
 
       expect(stdout.string).to include(output)
-      
     end
   end
 
@@ -27,7 +26,6 @@ RSpec.describe ProjectPrinter do
       project_printer.created(project_name)
 
       expect(stdout.string).to include(output)
-      
     end
   end
 
@@ -41,7 +39,6 @@ RSpec.describe ProjectPrinter do
       project_printer.does_not_exist(project_name)
 
       expect(stdout.string).to include(output)
-      
     end
   end
 
@@ -55,7 +52,6 @@ RSpec.describe ProjectPrinter do
       project_printer.deleting_a_project(project_name)
 
       expect(stdout.string).to include(output)
-      
     end
   end
 
@@ -69,7 +65,6 @@ RSpec.describe ProjectPrinter do
       project_printer.projects(projects)
 
       expect(stdout.string).to include(output)
-      
     end
   end
 end
