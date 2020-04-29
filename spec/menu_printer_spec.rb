@@ -7,13 +7,10 @@ RSpec.describe MenuPrinter do
       stdout = StringIO.new("")
       project_name = "Build tiny home"
       menu = MenuPrinter.new(stdout)
-      output = <<~MENU
-        Editing project: 'Build tiny home'
-      MENU
 
       menu.edit_project_menu(project_name)
 
-      expect(stdout.string).to include(output)
+      expect(normalized_output(stdout)).to include("Editing project: 'Build tiny home'")
     end
   end
 end
