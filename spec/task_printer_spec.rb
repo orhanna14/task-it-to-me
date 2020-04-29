@@ -3,7 +3,7 @@ require "task_printer"
 
 RSpec.describe TaskPrinter do
   describe "#finished" do
-    it "states that the task is finished" do
+    it "prints out that a specific task is finished" do
       stdout = StringIO.new("")
       task_name = "First task"
       task_printer = TaskPrinter.new(stdout)
@@ -15,7 +15,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#deleted" do
-    it "states that the task is deleted" do
+    it "prints out that a specific task was deleted" do
       stdout = StringIO.new("")
       task_name = "First task"
       task_printer = TaskPrinter.new(stdout)
@@ -27,7 +27,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#no_tasks_created_in_current_project" do
-    it "states that no tasks are created" do
+    it "prints out that no tasks are created in the current project" do
       stdout = StringIO.new("")
       current_project = {"First project"=> []}
       task_printer = TaskPrinter.new(stdout)
@@ -39,7 +39,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#no_tasks_created" do
-    it "states that no tasks are created" do
+    it "prints out that no tasks are created in a specific project" do
       stdout = StringIO.new("")
       project = "First project"
       task_printer = TaskPrinter.new(stdout)
@@ -51,7 +51,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#changed_task_name" do
-    it "states that it has changed the task name" do
+    it "prints out that the task's name has been changed" do
       stdout = StringIO.new("")
       task_name = "First task"
       task_name_new = "Updated task"
@@ -64,7 +64,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#editing_task" do
-    it "states that it is editing a task" do
+    it "prints out that a specific task is being edited" do
       stdout = StringIO.new("")
       task_name = "First task"
       task_printer = TaskPrinter.new(stdout)
@@ -76,7 +76,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#created" do
-    it "states that it has created a task" do
+    it "prints out that a specific task has been created" do
       stdout = StringIO.new("")
       task_name = "First task"
       task_printer = TaskPrinter.new(stdout)
@@ -88,7 +88,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#does_not_exist" do
-    it "states that the task does not exist" do
+    it "prints out that a specific task does not exist" do
       stdout = StringIO.new("")
       task_name = "First task"
       task_printer = TaskPrinter.new(stdout)
@@ -100,7 +100,7 @@ RSpec.describe TaskPrinter do
   end
 
   describe "#task" do
-    it "outputs the task" do
+    it "prints out a task's name" do
       stdout = StringIO.new("")
       task_name = "First task"
       task_printer = TaskPrinter.new(stdout)
