@@ -8,11 +8,10 @@ RSpec.describe ProjectPrinter do
       project_name = "First project"
       new_project_name = "Updated project"
       project_printer = ProjectPrinter.new(stdout)
-      output = "\e[38;5;40mChanged project name from\e[0m 'First project' \e[38;5;40mto\e[0m 'Updated project'"
 
       project_printer.changed_name(project_name, new_project_name)
 
-      expect(stdout.string).to include(output)
+      expect(stdout.string).to include("\e[38;5;40mChanged project name from\e[0m 'First project' \e[38;5;40mto\e[0m 'Updated project'")
     end
   end
 
@@ -21,11 +20,10 @@ RSpec.describe ProjectPrinter do
       stdout = StringIO.new("")
       project_name = "First project"
       project_printer = ProjectPrinter.new(stdout)
-      output = "\e[38;5;40mCreated project:\e[0m 'First project'"
 
       project_printer.created(project_name)
 
-      expect(stdout.string).to include(output)
+      expect(stdout.string).to include("\e[38;5;40mCreated project:\e[0m 'First project'")
     end
   end
 
@@ -34,11 +32,10 @@ RSpec.describe ProjectPrinter do
       stdout = StringIO.new("")
       project_name = "First project "
       project_printer = ProjectPrinter.new(stdout)
-      output = "\e[40;38;5;214mProject doesn't exist:\e[0m 'First project'"
 
       project_printer.does_not_exist(project_name)
 
-      expect(stdout.string).to include(output)
+      expect(stdout.string).to include("\e[40;38;5;214mProject doesn't exist:\e[0m 'First project'")
     end
   end
 
@@ -47,11 +44,10 @@ RSpec.describe ProjectPrinter do
       stdout = StringIO.new("")
       project_name = "First project "
       project_printer = ProjectPrinter.new(stdout)
-      output = "\e[38;5;40mDeleting project:\e[0m 'First project'"
 
       project_printer.deleting_a_project(project_name)
 
-      expect(stdout.string).to include(output)
+      expect(stdout.string).to include("\e[38;5;40mDeleting project:\e[0m 'First project'")
     end
   end
 
@@ -60,11 +56,10 @@ RSpec.describe ProjectPrinter do
       stdout = StringIO.new("")
       projects = {"First project" => []}
       project_printer = ProjectPrinter.new(stdout)
-      output = "  First project"
 
       project_printer.projects(projects)
 
-      expect(stdout.string).to include(output)
+      expect(stdout.string).to include("  First project")
     end
   end
 end

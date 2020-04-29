@@ -8,7 +8,7 @@ RSpec.describe MenuPrinter do
       project_name = "Build tiny home"
       menu = MenuPrinter.new(stdout)
       output = <<~MENU
-      Editing project: 'Build tiny home'
+        Editing project: 'Build tiny home'
       MENU
 
       menu.edit_project_menu(project_name)
