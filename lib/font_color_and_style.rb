@@ -1,26 +1,22 @@
 class FontColorAndStyle
 
-  def italics
-    "\e[0;3m"
+  def italics(text)
+    "\e[0;3m#{text}\e[0m"
   end
 
-  def orange
-    "\e[40;38;5;214m"
+  def orange(text)
+    "\e[40;38;5;214m#{text}\e[0m"
   end
 
-  def green
-    "\e[38;5;40m"
+  def green(text)
+    "\e[38;5;40m#{text}\e[0m"
   end
 
-  def white
-    "\e[0;37m"
+  def white(text)
+    "\e[0;37m#{text}\e[0m"
   end
 
-  def magenta
-    "\e[0;35m"
-  end
-
-  def escape
-    "\e[0m"
+  def magenta(text)
+    "\e[0;35m#{text}\e[0m"
   end
 end
