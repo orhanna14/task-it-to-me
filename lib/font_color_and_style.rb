@@ -12,6 +12,14 @@ class FontColorAndStyle
     "\e[38;5;40m"
   end
 
+  def white
+    "\e[0;37m"
+  end
+
+  def magenta
+    "\e[0;35m"
+  end
+
   def escape
     "\e[0m"
   end
