@@ -10,7 +10,7 @@ class MenuPrinter
   
   def project_menu
     stdout.puts colors.green + ("Welcome to Taskitome!")
-    stdout.puts colors.white + ("=============================\n")
+    stdout.puts colors.white + ("=============================")
     stdout.puts colors.escape + ("PROJECTS MENU")
     stdout.puts colors.white + ("-----------------------------")
     stdout.puts colors.orange + ("ENTER A COMMAND:") + colors.escape

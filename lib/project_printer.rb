@@ -33,7 +33,7 @@ class ProjectPrinter
   end
 
   def none_created
-    stdout.puts colors.orange + ("No projects created\n\n") + colors.escape
+    stdout.puts colors.orange + ("No projects created") + colors.escape
   end
 
   def cannot_delete_a_project

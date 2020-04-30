@@ -1,8 +1,11 @@
+require_relative "font_color_and_style"
+
 class TaskPrinter
-  attr_accessor :stdout
+  attr_accessor :stdout, :colors
 
   def initialize(stdout)
     @stdout = stdout
+    @colors = FontColorAndStyle.new
   end
 
   def task(task)
@@ -10,39 +13,39 @@ class TaskPrinter
   end
 
   def does_not_exist(task_name)
-    stdout.puts("\e[40;38;5;214mTask doesn't exist:\e[0m '#{task_name.strip}'\n\n")
+    stdout.puts colors.orange + ("Task doesn't exist: '#{task_name.strip}'") + colors.escape
   end
 
   def created(task_name)
-    stdout.puts("\e[38;5;40mCreated task:\e[0m '#{task_name}'\n\n")
+    stdout.puts colors.green + ("Created task: '#{task_name}'") + colors.escape
   end
 
   def editing_task(name)
-    stdout.puts("\e[38;5;40mEditing task:\e[0m '#{name}'")
+    stdout.puts colors.green + ("Editing task: '#{name}'") + colors.escape
   end
 
   def changed_task_name(name, new_name)
-    stdout.puts("\e[38;5;40mChanged task name from\e[0m '#{name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
+    stdout.puts colors.green + ("Changed task name from '#{name}' to '#{new_name}'") + colors.escape
   end
 
   def no_tasks_created(project_name)
-    stdout.puts("\e[40;38;5;214mNo tasks created in '#{project_name}'\e[0m\n\n")
+    stdout.puts colors.orange + ("No tasks created in '#{project_name}'") + colors.escape
   end
 
   def no_tasks_created_in_current_project(current_project)
-    stdout.puts("\e[40;38;5;214mNo tasks created in \e[0m'#{current_project.keys.first}'\n\n")
+    stdout.puts colors.orange + ("No tasks created in '#{current_project.keys.first}'") + colors.escape
   end
 
   def deleted(task_name)
-    stdout.puts("\e[38;5;40mDeleted task:\e[0m '#{task_name.strip}'\n\n")
+    stdout.puts colors.green + ("Deleted task: '#{task_name.strip}'") + colors.escape
   end
 
   def finished(task_name)
-    stdout.puts("\e[38;5;40mFinished task:\e[0m '#{task_name.strip}'\n\n")
+    stdout.puts colors.green + ("Finished task: '#{task_name.strip}'") + colors.escape
   end
 
   def list_of_tasks
-    stdout.puts("\e[38;5;40mListing tasks:\e[0m")
+    stdout.puts colors.green + ("Listing tasks:") + colors.escape
   end
 
   def double_line
