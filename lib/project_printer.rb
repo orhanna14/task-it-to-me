@@ -13,39 +13,39 @@ class ProjectPrinter
   end
 
   def deleting_a_project(project_name)
-    stdout.puts colors.green + "Deleting project: '#{project_name.strip}'" + colors.escape_color
+    stdout.puts colors.green + "Deleting project: '#{project_name.strip}'" + colors.escape
   end
 
   def does_not_exist(project_name)
-    stdout.puts colors.orange + "Project doesn't exist: '#{project_name.strip}'" + colors.escape_color
+    stdout.puts colors.orange + "Project doesn't exist: '#{project_name.strip}'" + colors.escape
   end
 
   def created(name)
-    stdout.puts colors.green + ("Created project: '#{name}'") + colors.escape_color
+    stdout.puts colors.green + ("Created project: '#{name}'") + colors.escape
   end
 
   def changed_name(old_name, new_name)
-    stdout.puts colors.green + ("Changed project name from '#{old_name}' to '#{new_name}'") + colors.escape_color
+    stdout.puts colors.green + ("Changed project name from '#{old_name}' to '#{new_name}'") + colors.escape
   end
 
   def list_of_projects
-    stdout.puts colors.green + ("Listing projects:") + colors.escape_color
+    stdout.puts colors.green + ("Listing projects:") + colors.escape
   end
 
   def none_created
-    stdout.puts colors.orange + ("No projects created\n\n") + colors.escape_color
+    stdout.puts colors.orange + ("No projects created\n\n") + colors.escape
   end
 
   def cannot_delete_a_project
-    stdout.puts colors.orange + ("Can't delete a project") + colors.escape_color
+    stdout.puts colors.orange + ("Can't delete a project") + colors.escape
   end
 
   def cannot_edit_a_project
-    stdout.puts colors.orange + ("Can't edit project") + colors.escape_color
+    stdout.puts colors.orange + ("Can't edit project") + colors.escape
   end
 
   def cannot_edit_projects
-    stdout.puts colors.orange + ("Can't edit any projects") + colors.escape_color
+    stdout.puts colors.orange + ("Can't edit any projects") + colors.escape
   end
 
   def single_line

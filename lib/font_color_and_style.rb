@@ -1,4 +1,9 @@
 class FontColorAndStyle
+
+  def italics
+    "\e[0;3m"
+  end
+
   def orange
     "\e[40;38;5;214m"
   end
@@ -7,7 +12,7 @@ class FontColorAndStyle
     "\e[38;5;40m"
   end
 
-  def escape_color
+  def escape
     "\e[0m"
   end
 end
