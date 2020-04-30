@@ -1,4 +1,4 @@
-class Colors
+class FontColorAndStyle
   def orange
     "\e[40;38;5;214m"
   end

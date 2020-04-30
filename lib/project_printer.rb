@@ -1,11 +1,11 @@
-require_relative "colors"
+require_relative "font_color_and_style"
 
 class ProjectPrinter
   attr_accessor :stdout, :colors
 
   def initialize(stdout)
     @stdout = stdout
-    @colors = Colors.new
+    @colors = FontColorAndStyle.new
   end
 
   def projects(project)
