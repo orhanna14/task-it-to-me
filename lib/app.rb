@@ -5,7 +5,7 @@ require_relative "prompter"
 require_relative "user_input"
 
 class App
-  attr_reader :menu_printer, :project_printer, :task_printer, :user_input, :prompter
+  attr_reader :menu_printer, :project_printer, :task_printer, :user_input, :prompter, :projects
 
   def initialize(stdout, stdin)
     @menu_printer = MenuPrinter.new(stdout)
@@ -13,6 +13,15 @@ class App
     @task_printer = TaskPrinter.new(stdout)
     @user_input = UserInput.new(stdin)
     @prompter = Prompter.new(stdout)
+    @projects = []
+  end
+
+  def add_project(name)
+    projects << {name => []}
+  end
+
+  def projects_empty?
+    projects.empty?
   end
 
   def run
@@ -24,15 +33,14 @@ class App
       if !@current_project
         case command
         when "a"
-          @projects = [] if @projects.nil?
           prompter.project_name
           name = user_input.get_project_or_task_name
-          @projects << {name => []}
+          add_project(name)
           project_printer.created(name)
         when "ls"
           project_printer.list_of_projects
-          if !@projects.nil? && !@projects.empty?
-            @projects.each do |project|
+          if !projects_empty?
+            projects.each do |project|
               project_printer.projects(project)
             end
             project_printer.single_line
@@ -40,10 +48,10 @@ class App
             project_printer.none_created
           end
         when "d"
-          if @projects && (@projects.size > 0)
+          if !projects_empty?
             prompter.project_name
             project_name = user_input.get_project_or_task_name
-            @deleted = @projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
+            @deleted = projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
             if @deleted
               project_printer.deleting_a_project(project_name)
             else
@@ -51,13 +59,13 @@ class App
             end
           end
 
-          if !@deleted && (!@projects || @projects.empty?)
+          if !@deleted && (projects.empty?)
             project_printer.cannot_delete_a_project
             project_printer.none_created
           end
           @deleted = nil
         when "e"
-          if !@projects || @projects.size == 0
+          if projects_empty?
             project_printer.cannot_edit_projects
             project_printer.none_created
             command = user_input.get_project_input
