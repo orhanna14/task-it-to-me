@@ -50,18 +50,16 @@ class App
           if !projects_empty?
             prompter.project_name
             project_name = user_input.get_project_or_task_name
-            @deleted = projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
-            if @deleted
+            if project_can_be_found_and_deleted?(project_name)
               project_printer.deleting_a_project(project_name)
             else
               project_printer.does_not_exist(project_name)
             end
           end
-          if !@deleted && projects_empty?
+          if projects_empty?
             project_printer.cannot_delete_a_project
             project_printer.none_created
           end
-          @deleted = nil
         when "e"
           if projects_empty?
             project_printer.cannot_edit_projects
@@ -158,6 +156,10 @@ class App
 
   def projects_empty?
     projects.empty?
+  end
+
+  def project_can_be_found_and_deleted?(project_name)
+    projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
   end
 
   def current_project_exists?(name)
