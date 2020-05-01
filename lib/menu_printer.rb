@@ -1,38 +1,38 @@
-require_relative "font_color_and_style"
+require_relative "text_formatting"
 
 class MenuPrinter
-  attr_accessor :stdout, :colors
+  attr_accessor :stdout, :text_format
 
   def initialize(stdout)
     @stdout = stdout
-    @colors = FontColorAndStyle.new
+    @text_format = TextFormatting.new
   end
   
   def project_menu
-    stdout.puts colors.success("Welcome to Taskitome!")
-    stdout.puts colors.default("=============================")
+    stdout.puts text_format.success("Welcome to Taskitome!")
+    stdout.puts text_format.default("=============================")
     stdout.puts ("PROJECTS MENU")
-    stdout.puts colors.default("-----------------------------")
-    stdout.puts colors.alert("ENTER A COMMAND:")
-    stdout.puts colors.default("a ") + colors.options("  Add a new project")
-    stdout.puts colors.default("ls ")  + colors.options(" List all project")
-    stdout.puts colors.default("d ") + colors.options("  Delete a project")
-    stdout.puts colors.default("e ") + colors.options("  Edit a project")
-    stdout.puts colors.default("q ")  + colors.options("  Quit the app")
+    stdout.puts text_format.default("-----------------------------")
+    stdout.puts text_format.prompt("ENTER A COMMAND:")
+    stdout.puts text_format.menu_item("a ", "  Add a new project")
+    stdout.puts text_format.menu_item("ls ", " List all projects")
+    stdout.puts text_format.menu_item("d ", "  Delete a project")
+    stdout.puts text_format.menu_item("e ", "  Edit a project")
+    stdout.puts text_format.menu_item("q ", "  Quit the app")
   end
 
   def edit_project_menu(name)
-    stdout.puts colors.success("Editing project: '#{name}'")
-    stdout.puts colors.default("EDIT PROJECT MENU")
+    stdout.puts text_format.success("Editing project: '#{name}'")
+    stdout.puts text_format.default("EDIT PROJECT MENU")
     stdout.puts("-----------------------------")
-    stdout.puts colors.alert("ENTER A COMMAND:")
-    stdout.puts colors.default("c ") + colors.options("  Change the project name")
-    stdout.puts colors.default("a ") + colors.options("  Add a new task")
-    stdout.puts colors.default("ls ") + colors.options(" List all tasks")
-    stdout.puts colors.default("d ")  + colors.options("  Delete a task")
-    stdout.puts colors.default("e ") + colors.options("  Edit a task")
-    stdout.puts colors.default("f ")  + colors.options("  Finish a task")
-    stdout.puts colors.default("b ")  + colors.options("  Back to Projects menu")
-    stdout.puts colors.default("q ")  + colors.options("  Quit the app")
+    stdout.puts text_format.prompt("ENTER A COMMAND:")
+    stdout.puts text_format.menu_item("c ", "  Change the project name")
+    stdout.puts text_format.menu_item("a ", "  Add a new task")
+    stdout.puts text_format.menu_item("ls ", " List all tasks")
+    stdout.puts text_format.menu_item("d ", "  Delete a task")
+    stdout.puts text_format.menu_item("e ", "  Edit a task")
+    stdout.puts text_format.menu_item("f ", "  Finish a task")
+    stdout.puts text_format.menu_item("b ", "  Back to Projects menu")
+    stdout.puts text_format.menu_item("q ", "  Quit the app")
   end
 end

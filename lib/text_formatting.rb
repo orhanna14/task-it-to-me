@@ -1,4 +1,4 @@
-class FontColorAndStyle
+class TextFormatting
   GREEN = "\e[38;5;40m"
   ORANGE = "\e[40;38;5;214m"
   WHITE = "\e[0;37m"
@@ -14,6 +14,10 @@ class FontColorAndStyle
     "#{ORANGE}#{text}#{END_FORMATTING}"
   end
 
+  def prompt(text)
+    "#{ORANGE}#{text}#{END_FORMATTING}"
+  end
+
   def success(text)
     "#{GREEN}#{text}#{END_FORMATTING}"
   end
@@ -22,7 +26,7 @@ class FontColorAndStyle
     "#{WHITE}#{text}#{END_FORMATTING}"
   end
 
-  def options(text)
-    "#{MAGENTA}#{text}#{END_FORMATTING}"
+  def menu_item(command, description)
+    "#{WHITE}#{command}#{END_FORMATTING}" + "#{MAGENTA}#{description}#{END_FORMATTING}"
   end
 end
