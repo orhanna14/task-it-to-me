@@ -19,13 +19,17 @@ class App
     @projects ||= []
   end
 
+  def current_project
+    @current_project ||= {}
+  end
+
   def run
     menu_printer.project_menu
 
     command = user_input.get_project_input
 
     while command != "q"
-      if !@current_project
+      if current_project.empty?
         case command
         when "a"
           prompter.project_name
@@ -53,8 +57,7 @@ class App
               project_printer.does_not_exist(project_name)
             end
           end
-
-          if !@deleted && (projects.empty?)
+          if !@deleted && projects_empty?
             project_printer.cannot_delete_a_project
             project_printer.none_created
           end
@@ -66,10 +69,9 @@ class App
             command = user_input.get_project_input
             next
           end
-
           prompter.project_name
           name = user_input.get_project_or_task_name
-          if (@current_project = @projects.detect { |p| p.keys.first == name })
+          if current_project_exists?(name)
           menu_printer.edit_project_menu(name)
             command = user_input.get_project_input
             next
@@ -83,61 +85,60 @@ class App
         when "a"
           prompter.new_task_name
           task_name = user_input.get_project_or_task_name
-          @current_project.values.first << task_name
+          add_task_to_current_project(task_name)
           task_printer.created(task_name)
         when "b"
-          @current_project = false
+          @current_project = {}
           task_printer.double_line
         when "c"
           prompter.new_project_name
-          old_name = @current_project.keys.first
+          old_name = original_name_of_current_project
           new_name = user_input.get_project_or_task_name
-          @current_project[new_name] = @current_project.values.first
-          @current_project.delete(old_name)
+          update_name_association_with_existing_tasks(new_name, old_name)
           project_printer.changed_name(old_name, new_name)
         when "e"
           name = user_input.get_project_or_task_name
-          if (index = @current_project.values.first.find_index(name))
+          if (index = tasks_in_current_project.find_index(name))
             task_printer.editing_task(name)
             prompter.new_task_name
             new_name = user_input.get_project_or_task_name
-            @current_project[@current_project.keys.first][index] = new_name
+            change_name_of_task_in_current_project(index, new_name)
             task_printer.changed_task_name(name, new_name)
           else
             task_printer.does_not_exist(name)
           end
         when "d"
-          project_name = @current_project.keys.first
-          if @current_project.values.first.empty?
+          project_name = original_name_of_current_project
+          if tasks_in_current_project.empty?
             task_printer.no_tasks_created(project_name)
           else
             prompter.existing_task_name
             task_name = user_input.get_project_or_task_name
-            if @current_project[@current_project.keys.first].delete(task_name.strip)
+            if task_can_be_removed_from_current_project?(task_name)
               task_printer.deleted(task_name)
             else
               task_printer.does_not_exist(task_name)
             end
           end
         when "f"
-          project_name = @current_project.keys.first
-          if @current_project.values.first.empty?
+          project_name = original_name_of_current_project
+          if tasks_in_current_project.empty?
             task_printer.no_tasks_created(project_name)
           else
             prompter.existing_task_name
             task_name = user_input.get_project_or_task_name
-            if @current_project[@current_project.keys.first].delete(task_name.strip)
+            if task_can_be_removed_from_current_project?(task_name)
               task_printer.finished(task_name)
             else
               task_printer.does_not_exist(task_name)
             end
           end
         when "ls"
-          if @current_project.values.first.empty?
-            task_printer.no_tasks_created_in_current_project(@current_project)
+          if tasks_in_current_project.empty?
+            task_printer.no_tasks_created_in_current_project(current_project)
           else
             task_printer.list_of_tasks
-            @current_project.values.first.each do |task|
+            tasks_in_current_project.each do |task|
               task_printer.task(task)
             end
             task_printer.double_line
@@ -157,5 +158,34 @@ class App
 
   def projects_empty?
     projects.empty?
+  end
+
+  def current_project_exists?(name)
+    @current_project = projects.detect { |p| p.keys.first == name }
+  end
+
+  def add_task_to_current_project(task_name)
+    current_project.values.first << task_name
+  end
+
+  def original_name_of_current_project
+    current_project.keys.first
+  end
+
+  def tasks_in_current_project
+    current_project.values.first
+  end
+
+  def task_can_be_removed_from_current_project?(task_name)
+    current_project[original_name_of_current_project].delete(task_name.strip)
+  end
+
+  def update_name_association_with_existing_tasks(new_name, old_name)
+    current_project[new_name] = tasks_in_current_project
+    current_project.delete(old_name)
+  end
+
+  def change_name_of_task_in_current_project(index, new_name)
+    current_project[original_name_of_current_project][index] = new_name
   end
 end
