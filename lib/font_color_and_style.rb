@@ -1,22 +1,28 @@
 class FontColorAndStyle
+  GREEN = "\e[38;5;40m"
+  ORANGE = "\e[40;38;5;214m"
+  WHITE = "\e[0;37m"
+  MAGENTA = "\e[0;35m"
+  ITALICS = "\e[0;3m"
+  END_FORMATTING = "\e[0m"
 
-  def italics(text)
-    "\e[0;3m#{text}\e[0m"
+  def emphasis(text)
+    "#{ITALICS}#{text}#{END_FORMATTING}"
   end
 
-  def orange(text)
-    "\e[40;38;5;214m#{text}\e[0m"
+  def alert(text)
+    "#{ORANGE}#{text}#{END_FORMATTING}"
   end
 
-  def green(text)
-    "\e[38;5;40m#{text}\e[0m"
+  def success(text)
+    "#{GREEN}#{text}#{END_FORMATTING}"
   end
 
-  def white(text)
-    "\e[0;37m#{text}\e[0m"
+  def default(text)
+    "#{WHITE}#{text}#{END_FORMATTING}"
   end
 
-  def magenta(text)
-    "\e[0;35m#{text}\e[0m"
+  def options(text)
+    "#{MAGENTA}#{text}#{END_FORMATTING}"
   end
 end
