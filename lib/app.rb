@@ -5,7 +5,7 @@ require_relative "prompter"
 require_relative "user_input"
 
 class App
-  attr_reader :menu_printer, :project_printer, :task_printer, :user_input, :prompter, :projects
+  attr_reader :menu_printer, :project_printer, :task_printer, :user_input, :prompter
 
   def initialize(stdout, stdin)
     @menu_printer = MenuPrinter.new(stdout)
@@ -13,15 +13,10 @@ class App
     @task_printer = TaskPrinter.new(stdout)
     @user_input = UserInput.new(stdin)
     @prompter = Prompter.new(stdout)
-    @projects = []
   end
 
-  def add_project(name)
-    projects << {name => []}
-  end
-
-  def projects_empty?
-    projects.empty?
+  def projects
+    @projects ||= []
   end
 
   def run
@@ -154,4 +149,13 @@ class App
     end
   end
 
+  private
+
+  def add_project(name)
+    projects << {name => []}
+  end
+
+  def projects_empty?
+    projects.empty?
+  end
 end
