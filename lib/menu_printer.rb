@@ -1,35 +1,38 @@
+require_relative "text_formatting"
+
 class MenuPrinter
-  attr_accessor :stdout
+  attr_accessor :stdout, :text_format
 
   def initialize(stdout)
     @stdout = stdout
+    @text_format = TextFormatting.new
   end
   
   def project_menu
-    stdout.puts("\e[38;5;40mWelcome to Taskitome!")
-    stdout.puts("\e[0;37m=============================\n")
-    stdout.puts("\e[0mPROJECTS MENU")
-    stdout.puts("\e[0;37m-----------------------------")
-    stdout.puts("\e[40;38;5;214mENTER A COMMAND:\e[0m")
-    stdout.puts("\e[1;37ma   \e[0;35mAdd a new project")
-    stdout.puts("\e[1;37mls  \e[0;35mList all project")
-    stdout.puts("\e[1;37md   \e[0;35mDelete a project")
-    stdout.puts("\e[1;37me   \e[0;35mEdit a project")
-    stdout.puts("\e[1;37mq   \e[0;35mQuit the app\e[0m\n\n")
+    stdout.puts text_format.success("Welcome to Taskitome!")
+    stdout.puts text_format.default("=============================")
+    stdout.puts ("PROJECTS MENU")
+    stdout.puts text_format.default("-----------------------------")
+    stdout.puts text_format.prompt("ENTER A COMMAND:")
+    stdout.puts text_format.menu_item("a ", "  Add a new project")
+    stdout.puts text_format.menu_item("ls ", " List all projects")
+    stdout.puts text_format.menu_item("d ", "  Delete a project")
+    stdout.puts text_format.menu_item("e ", "  Edit a project")
+    stdout.puts text_format.menu_item("q ", "  Quit the app")
   end
 
   def edit_project_menu(name)
-    stdout.puts("\e[38;5;40mEditing project: '#{name}'\n\n")
-    stdout.puts("\e[0;37mEDIT PROJECT MENU\e[0m")
+    stdout.puts text_format.success("Editing project: '#{name}'")
+    stdout.puts text_format.default("EDIT PROJECT MENU")
     stdout.puts("-----------------------------")
-    stdout.puts("\e[40;38;5;214mENTER A COMMAND:\e[0m")
-    stdout.puts("\e[1;37mc   \e[0;35mChange the project name")
-    stdout.puts("\e[1;37ma   \e[0;35mAdd a new task")
-    stdout.puts("\e[1;37mls  \e[0;35mList all tasks")
-    stdout.puts("\e[1;37md   \e[0;35mDelete a task")
-    stdout.puts("\e[1;37me   \e[0;35mEdit a task")
-    stdout.puts("\e[1;37mf   \e[0;35mFinish a task")
-    stdout.puts("\e[1;37mb   \e[0;35mBack to Projects menu")
-    stdout.puts("\e[1;37mq   \e[0;35mQuit the app\e[0m\n\n")
+    stdout.puts text_format.prompt("ENTER A COMMAND:")
+    stdout.puts text_format.menu_item("c ", "  Change the project name")
+    stdout.puts text_format.menu_item("a ", "  Add a new task")
+    stdout.puts text_format.menu_item("ls ", " List all tasks")
+    stdout.puts text_format.menu_item("d ", "  Delete a task")
+    stdout.puts text_format.menu_item("e ", "  Edit a task")
+    stdout.puts text_format.menu_item("f ", "  Finish a task")
+    stdout.puts text_format.menu_item("b ", "  Back to Projects menu")
+    stdout.puts text_format.menu_item("q ", "  Quit the app")
   end
 end

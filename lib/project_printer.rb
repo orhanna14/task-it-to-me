@@ -1,48 +1,51 @@
+require_relative "text_formatting"
+
 class ProjectPrinter
-  attr_accessor :stdout
+  attr_accessor :stdout, :text_format
 
   def initialize(stdout)
     @stdout = stdout
+    @text_format = TextFormatting.new
   end
 
   def projects(project)
-    stdout.puts("  #{project.keys.first}\n")
+    stdout.puts("  #{project.keys.first}")
   end
 
   def deleting_a_project(project_name)
-    stdout.puts "\e[38;5;40mDeleting project:\e[0m '#{project_name.strip}'\n\n"
+    stdout.puts text_format.success("Deleting project: '#{project_name.strip}'")
   end
 
   def does_not_exist(project_name)
-    stdout.puts "\e[40;38;5;214mProject doesn't exist:\e[0m '#{project_name.strip}'\n\n"
+    stdout.puts text_format.alert("Project doesn't exist: '#{project_name.strip}'")
   end
 
   def created(name)
-    stdout.puts("\e[38;5;40mCreated project:\e[0m '#{name}'\n\n")
+    stdout.puts text_format.success("Created project: '#{name}'")
   end
 
   def changed_name(old_name, new_name)
-    stdout.puts("\e[38;5;40mChanged project name from\e[0m '#{old_name}' \e[38;5;40mto\e[0m '#{new_name}'\n\n")
+    stdout.puts text_format.success("Changed project name from '#{old_name}' to '#{new_name}'")
   end
 
   def list_of_projects
-    stdout.puts("\e[38;5;40mListing projects:\e[0m\n")
+    stdout.puts text_format.success("Listing projects:")
   end
 
   def none_created
-    stdout.puts("\e[40;38;5;214mNo projects created\e[0m\n\n")
+    stdout.puts text_format.alert("No projects created")
   end
 
   def cannot_delete_a_project
-    stdout.puts("\e[40;38;5;214mCan't delete a project\e[0m")
+    stdout.puts text_format.alert("Can't delete a project")
   end
 
   def cannot_edit_a_project
-    stdout.puts("\e[40;38;5;214mCan't edit project\e[0m")
+    stdout.puts text_format.alert("Can't edit project")
   end
 
   def cannot_edit_projects
-    stdout.puts("\e[40;38;5;214mCan't edit any projects\e[0m")
+    stdout.puts text_format.alert("Can't edit any projects")
   end
 
   def single_line
