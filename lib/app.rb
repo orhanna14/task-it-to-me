@@ -15,21 +15,13 @@ class App
     @prompter = Prompter.new(stdout)
   end
 
-  def projects
-    @projects ||= []
-  end
-
-  def current_project
-    @current_project ||= {}
-  end
-
   def run
     menu_printer.project_menu
 
     command = user_input.get_project_input
 
     while command != "q"
-      if current_project.empty?
+      if current_project_does_not_exist?
         case command
         when "a"
           prompter.project_name
@@ -107,7 +99,7 @@ class App
           end
         when "d"
           project_name = original_name_of_current_project
-          if tasks_in_current_project.empty?
+          if tasks_in_current_project_do_not_exist?
             task_printer.no_tasks_created(project_name)
           else
             prompter.existing_task_name
@@ -120,7 +112,7 @@ class App
           end
         when "f"
           project_name = original_name_of_current_project
-          if tasks_in_current_project.empty?
+          if tasks_in_current_project_do_not_exist?
             task_printer.no_tasks_created(project_name)
           else
             prompter.existing_task_name
@@ -132,7 +124,7 @@ class App
             end
           end
         when "ls"
-          if tasks_in_current_project.empty?
+          if tasks_in_current_project_do_not_exist?
             task_printer.no_tasks_created_in_current_project(current_project)
           else
             task_printer.list_of_tasks
@@ -150,6 +142,14 @@ class App
 
   private
 
+  def projects
+    @projects ||= []
+  end
+
+  def current_project
+    @current_project ||= {}
+  end
+
   def add_project(name)
     projects << {name => []}
   end
@@ -160,6 +160,10 @@ class App
 
   def project_can_be_found_and_deleted?(project_name)
     projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
+  end
+
+  def current_project_does_not_exist?
+    current_project.empty?
   end
 
   def current_project_exists?(name)
@@ -180,6 +184,10 @@ class App
 
   def task_can_be_removed_from_current_project?(task_name)
     current_project[original_name_of_current_project].delete(task_name.strip)
+  end
+
+  def tasks_in_current_project_do_not_exist?
+    tasks_in_current_project.empty?
   end
 
   def update_name_association_with_existing_tasks(new_name, old_name)
