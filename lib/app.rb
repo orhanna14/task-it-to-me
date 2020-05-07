@@ -3,6 +3,7 @@ require_relative "project_printer"
 require_relative "task_printer"
 require_relative "prompter"
 require_relative "user_input"
+require_relative "projects"
 
 class App
   attr_reader :menu_printer, :project_printer, :task_printer, :user_input, :prompter
@@ -26,34 +27,32 @@ class App
         when "a"
           prompter.project_name
           name = user_input.get_project_or_task_name
-          add_project(name)
+          projects.add_project(name)
           project_printer.created(name)
         when "ls"
           project_printer.list_of_projects
-          if !projects_empty?
-            projects.each do |project|
-              project_printer.projects(project)
-            end
+          if !projects.projects_empty?
+            projects.list
             project_printer.single_line
           else
             project_printer.none_created
           end
         when "d"
-          if !projects_empty?
+          if !projects.projects_empty?
             prompter.project_name
             project_name = user_input.get_project_or_task_name
-            if project_can_be_found_and_deleted?(project_name)
+            if projects.project_can_be_found_and_deleted?(project_name)
               project_printer.deleting_a_project(project_name)
             else
               project_printer.does_not_exist(project_name)
             end
           end
-          if projects_empty?
+          if projects.projects_empty?
             project_printer.cannot_delete_a_project
             project_printer.none_created
           end
         when "e"
-          if projects_empty?
+          if projects.projects_empty?
             project_printer.cannot_edit_projects
             project_printer.none_created
             command = user_input.get_project_input
@@ -61,7 +60,7 @@ class App
           end
           prompter.project_name
           name = user_input.get_project_or_task_name
-          if current_project_exists?(name)
+          if @current_project = projects.current_project_exists?(name)
           menu_printer.edit_project_menu(name)
             command = user_input.get_project_input
             next
@@ -143,31 +142,15 @@ class App
   private
 
   def projects
-    @projects ||= []
+    @projects ||= Projects.new(project_printer)
   end
 
   def current_project
     @current_project ||= {}
   end
 
-  def add_project(name)
-    projects << {name => []}
-  end
-
-  def projects_empty?
-    projects.empty?
-  end
-
-  def project_can_be_found_and_deleted?(project_name)
-    projects.delete_if { |project| project.keys.first == project_name.strip }.empty?
-  end
-
   def current_project_does_not_exist?
     current_project.empty?
-  end
-
-  def current_project_exists?(name)
-    @current_project = projects.detect { |p| p.keys.first == name }
   end
 
   def add_task_to_current_project(task_name)
